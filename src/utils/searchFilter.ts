@@ -161,3 +161,57 @@ export const getAutocompleteSuggestions = (
     )
     .slice(0, limit);
 };
+
+export interface RichAutocompleteResult {
+  categories: { label: string; value: ProductCategory }[];
+  brands: string[];
+  products: Product[];
+}
+
+const CATEGORY_MAP: { label: string; value: ProductCategory; keywords: string[] }[] = [
+  { label: 'Electronics & Audio', value: 'electronics', keywords: ['electronics', 'audio', 'sound', 'headphones', 'earbuds', 'headset', 'speakers'] },
+  { label: 'Computers & Accessories', value: 'computers', keywords: ['computers', 'laptops', 'macbook', 'pc', 'monitor', 'keyboard', 'mouse', 'ssd'] },
+  { label: 'Home & Kitchen', value: 'home', keywords: ['home', 'kitchen', 'espresso', 'coffee', 'cookware', 'appliances', 'vacuum'] },
+  { label: 'Fashion & Apparel', value: 'fashion', keywords: ['fashion', 'apparel', 'clothing', 'shoes', 'denim', 'sunglasses', 'sneakers'] },
+  { label: 'Books & Reading', value: 'books', keywords: ['books', 'reading', 'novel', 'finance', 'psychology', 'fiction'] },
+  { label: 'Beauty & Personal Care', value: 'beauty', keywords: ['beauty', 'skincare', 'hair', 'cosmetics', 'serum', 'personal care'] }
+];
+
+export const getRichAutocompleteSuggestions = (
+  allProducts: Product[],
+  rawQuery: string
+): RichAutocompleteResult => {
+  if (!rawQuery || rawQuery.trim().length < 2) {
+    return { categories: [], brands: [], products: [] };
+  }
+  const q = rawQuery.toLowerCase().trim();
+
+  // 1. Categories
+  const matchedCategories = CATEGORY_MAP.filter(cat => 
+    cat.label.toLowerCase().includes(q) || 
+    cat.value.toLowerCase().includes(q) ||
+    cat.keywords.some(k => k.includes(q) || q.includes(k))
+  ).map(c => ({ label: c.label, value: c.value }));
+
+  // 2. Brands
+  const uniqueBrands = Array.from(new Set(allProducts.map(p => p.brand)));
+  const matchedBrands = uniqueBrands
+    .filter(b => b.toLowerCase().includes(q))
+    .slice(0, 3);
+
+  // 3. Products
+  const matchedProducts = allProducts
+    .filter(p => 
+      p.title.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q)
+    )
+    .slice(0, 4);
+
+  return {
+    categories: matchedCategories.slice(0, 2),
+    brands: matchedBrands,
+    products: matchedProducts
+  };
+};
+

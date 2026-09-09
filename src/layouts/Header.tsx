@@ -7,7 +7,8 @@ import {
   User, 
   Package, 
   X,
-  ChevronDown
+  ChevronDown,
+  Heart
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { SearchAutocomplete } from '../components/search/SearchAutocomplete';
@@ -15,6 +16,8 @@ import { SearchAutocomplete } from '../components/search/SearchAutocomplete';
 export const Header: React.FC = () => {
   const { itemCount: cartItemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
 
   return (
     <header className="w-full text-white select-none sticky top-0 z-50">
@@ -61,14 +64,92 @@ export const Header: React.FC = () => {
 
         {/* Right Nav Options */}
         <div className="flex items-center gap-1 sm:gap-3">
-          {/* Account / Sign In */}
+          {/* Account / Sign In Dropdown Popover */}
+          <div className="relative hidden sm:block">
+            <button
+              type="button"
+              onClick={() => setAccountMenuOpen(prev => !prev)}
+              className="flex flex-col py-1 px-2 border border-transparent hover:border-white rounded transition text-left text-xs cursor-pointer focus:outline-none focus:border-white"
+              aria-expanded={accountMenuOpen}
+              aria-haspopup="true"
+            >
+              <span className="text-gray-300 text-[11px] leading-none">
+                {isSignedIn ? 'Hello, Alex' : 'Hello, Sign in'}
+              </span>
+              <span className="font-bold text-white flex items-center gap-0.5">
+                Account & Lists <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${accountMenuOpen ? 'rotate-180' : ''}`} />
+              </span>
+            </button>
+
+            {/* Popover Menu */}
+            {accountMenuOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setAccountMenuOpen(false)} 
+                />
+                <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 text-amazon-text p-3 text-xs space-y-3 animate-in fade-in zoom-in-95 duration-100 text-left">
+                  <div className="p-3 bg-amber-50/70 border border-amber-200/60 rounded-lg flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-amazon-text">
+                        {isSignedIn ? 'Alex Johnson' : 'Demo Customer'}
+                      </p>
+                      <p className="text-[11px] text-gray-500">
+                        {isSignedIn ? 'alex@example.com' : 'Signed out'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsSignedIn(prev => !prev)}
+                      className="text-[11px] font-bold text-amazon-link hover:underline"
+                    >
+                      {isSignedIn ? 'Sign Out' : 'Sign In'}
+                    </button>
+                  </div>
+
+                  <div className="space-y-1 pt-1 border-t border-gray-100">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block px-2">
+                      Your Account
+                    </span>
+                    <Link
+                      to="/account"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="block px-2 py-1.5 rounded-lg hover:bg-gray-100 font-semibold transition"
+                    >
+                      Your Account Dashboard
+                    </Link>
+                    <Link
+                      to="/orders"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="block px-2 py-1.5 rounded-lg hover:bg-gray-100 font-semibold transition"
+                    >
+                      Your Orders & Purchases
+                    </Link>
+                    <Link
+                      to="/wishlist"
+                      onClick={() => setAccountMenuOpen(false)}
+                      className="block px-2 py-1.5 rounded-lg hover:bg-gray-100 font-semibold transition flex items-center justify-between"
+                    >
+                      <span>Your Wishlist</span>
+                      <span className="text-[10px] bg-rose-50 text-rose-600 font-bold px-1.5 py-0.5 rounded-full">
+                        Saved
+                      </span>
+                    </Link>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Wishlist Icon Nav */}
           <Link
-            to="/orders"
-            className="hidden sm:flex flex-col py-1 px-2 border border-transparent hover:border-white rounded transition text-left text-xs"
+            to="/wishlist"
+            className="hidden md:flex flex-col py-1 px-2 border border-transparent hover:border-white rounded transition text-left text-xs"
+            title="Your Wishlist"
           >
-            <span className="text-gray-300 text-[11px] leading-none">Hello, Sign in</span>
-            <span className="font-bold text-white flex items-center gap-0.5">
-              Account & Lists <ChevronDown className="w-3 h-3 text-gray-400" />
+            <span className="text-gray-300 text-[11px] leading-none">Saved</span>
+            <span className="font-bold text-white flex items-center gap-1">
+              <Heart className="w-3.5 h-3.5 text-rose-400" /> Wishlist
             </span>
           </Link>
 
@@ -138,7 +219,7 @@ export const Header: React.FC = () => {
             <div className="bg-amazon-slate text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <User className="w-5 h-5 text-amazon-amber" />
-                <span className="font-bold text-base">Hello, Sign In</span>
+                <span className="font-bold text-base">{isSignedIn ? 'Hello, Alex' : 'Hello, Sign In'}</span>
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)}
@@ -168,8 +249,14 @@ export const Header: React.FC = () => {
               <div>
                 <h3 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-2">Your Account</h3>
                 <div className="space-y-2">
+                  <Link to="/account" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-1 text-gray-800 hover:text-amazon-link">
+                    <User className="w-4 h-4 text-gray-500" /> Your Account & Profile
+                  </Link>
                   <Link to="/orders" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-1 text-gray-800 hover:text-amazon-link">
                     <Package className="w-4 h-4 text-gray-500" /> Your Orders
+                  </Link>
+                  <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-1 text-gray-800 hover:text-amazon-link">
+                    <Heart className="w-4 h-4 text-gray-500" /> Your Wishlist
                   </Link>
                   <Link to="/cart" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 py-1 text-gray-800 hover:text-amazon-link">
                     <ShoppingCart className="w-4 h-4 text-gray-500" /> Your Cart

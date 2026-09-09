@@ -10,3 +10,6 @@ tsconfig.tsbuildinfo
 
 # Never ignore agent logs
 !.agent-logs/
+
+# Test output
+test-results/

@@ -23,11 +23,19 @@ import {
   Sparkle
 } from 'lucide-react';
 
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
+import { getBecauseYouViewed, getSetupRecommendations } from '../utils/recommendations';
+
 export const HomePage: React.FC = () => {
+  const { recentProducts, recentIds } = useRecentlyViewed();
   const dealProducts = getDealProducts();
   const trendingProducts = getBestSellerProducts();
-  // Curated picks: sample 8 products across categories
-  const topPicks = products.slice(6, 14);
+  const topRatedProducts = products.filter(p => p.rating >= 4.7).slice(0, 8);
+
+  // Personalized modules based on user intent & local history
+  const lastViewedId = recentIds[0]?.id;
+  const becauseYouViewed = getBecauseYouViewed(lastViewedId, 6);
+  const setupRecommendations = getSetupRecommendations(lastViewedId, 6);
 
   const categories = [
     {
@@ -199,36 +207,75 @@ export const HomePage: React.FC = () => {
         </div>
       </Container>
 
-      {/* ==================== C. TODAY'S DEALS ROW ==================== */}
+      {/* ==================== C. RECENTLY VIEWED (INTENT PERSONALIZATION) ==================== */}
+      {recentProducts.length > 0 && (
+        <Container>
+          <ProductRow
+            title="Recently viewed"
+            subtitle="Pick up right where you left off in your shopping journey"
+            products={recentProducts}
+            viewAllLink="/account"
+            viewAllText="View browsing history"
+          />
+        </Container>
+      )}
+
+      {/* ==================== D. BECAUSE YOU VIEWED... ==================== */}
+      {becauseYouViewed.anchorProduct && becauseYouViewed.recommendations.length > 0 && (
+        <Container>
+          <ProductRow
+            title={`Because you viewed ${becauseYouViewed.anchorProduct.title.slice(0, 32)}...`}
+            subtitle={`Handpicked selections in ${becauseYouViewed.anchorProduct.category} tailored to your interests`}
+            products={becauseYouViewed.recommendations}
+            viewAllLink={`/search?category=${becauseYouViewed.anchorProduct.category}`}
+            viewAllText="More in this category"
+          />
+        </Container>
+      )}
+
+      {/* ==================== E. DEALS WORTH SEEING ==================== */}
       <Container>
         <ProductRow
-          title="Today's Deals"
-          subtitle="Handpicked limited-time discounts with verified Prime shipping"
+          title="Deals worth seeing"
+          subtitle="Handpicked limited-time discounts with verified Prime shipping and high customer satisfaction"
           products={dealProducts}
           viewAllLink="/search?category=all"
-          viewAllText="Explore all 18 deals"
+          viewAllText="Explore all deals"
         />
       </Container>
 
-      {/* ==================== D. TRENDING NOW / BEST SELLERS ==================== */}
+      {/* ==================== F. POPULAR RIGHT NOW ==================== */}
       <Container>
         <ProductRow
-          title="Trending Now & Best Sellers"
-          subtitle="Most purchased products across tech, home, and fashion this week"
+          title="Popular right now"
+          subtitle="Most purchased products across tech, home, and fashion trending this week"
           products={trendingProducts}
           viewAllLink="/search?category=all"
-          viewAllText="See trending catalog"
+          viewAllText="See all bestsellers"
         />
       </Container>
 
-      {/* ==================== E. RECOMMENDED / TOP PICKS ==================== */}
+      {/* ==================== G. COMPLETE YOUR SETUP ==================== */}
+      {setupRecommendations.products.length > 0 && (
+        <Container>
+          <ProductRow
+            title={setupRecommendations.title}
+            subtitle={setupRecommendations.subtitle}
+            products={setupRecommendations.products}
+            viewAllLink="/search?category=computers"
+            viewAllText="Shop tech essentials"
+          />
+        </Container>
+      )}
+
+      {/* ==================== H. TOP RATED IN YOUR CATEGORIES ==================== */}
       <Container>
         <ProductRow
-          title="Top Picks for Your Next Order"
-          subtitle="Curated high-rating customer favorites with 4.7+ stars"
-          products={topPicks}
+          title="Top rated in your categories"
+          subtitle="Customer-acclaimed products holding 4.7+ star ratings across thousands of verified reviews"
+          products={topRatedProducts}
           viewAllLink="/search?category=all"
-          viewAllText="View recommendations"
+          viewAllText="Explore top rated"
         />
       </Container>
 

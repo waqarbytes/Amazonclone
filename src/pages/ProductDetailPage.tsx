@@ -13,16 +13,21 @@ import { ProductReviews } from '../components/pdp/ProductReviews';
 import { ProductComparison } from '../components/pdp/ProductComparison';
 import { ProductRecommendations } from '../components/pdp/ProductRecommendations';
 import { MobileStickyBuyBar } from '../components/pdp/MobileStickyBuyBar';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { AlertCircle, Search } from 'lucide-react';
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const product = id ? getProductById(id) : undefined;
+  const { addRecentlyViewed } = useRecentlyViewed();
 
-  // Scroll to top when product changes
+  // Scroll to top and record in recently viewed when product changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [id]);
+    if (id) {
+      addRecentlyViewed(id);
+    }
+  }, [id, addRecentlyViewed]);
 
   const handleReviewsClick = () => {
     const el = document.getElementById('customer-reviews');

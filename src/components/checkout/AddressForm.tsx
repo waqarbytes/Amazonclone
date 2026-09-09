@@ -14,7 +14,8 @@ export const AddressForm: React.FC<AddressFormProps> = ({ initialAddress, onSave
   const [street, setStreet] = useState(initialAddress?.street || '');
   const [apt, setApt] = useState(initialAddress?.apt || '');
   const [city, setCity] = useState(initialAddress?.city || '');
-  const [state, setState] = useState(initialAddress?.state || '');
+  const [state, setState] =
+   useState(initialAddress?.state || '');
   const [zipCode, setZipCode] = useState(initialAddress?.zipCode || '');
   const [country] = useState(initialAddress?.country || 'United States');
   const [phone, setPhone] = useState(initialAddress?.phone || '');

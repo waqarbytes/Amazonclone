@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "tsx scripts/verify_m2.js && tsx scripts/verify_m3.js && tsx scripts/verify_m4.js && tsx scripts/verify_m5.js"
+    "test": "tsx scripts/verify_m2.js && tsx scripts/verify_m3.js && tsx scripts/verify_m4.js && tsx scripts/verify_m5.js && tsx scripts/verify_m6.js"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
@@ -16,6 +16,7 @@
     "react-router-dom": "^7.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22.13.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
