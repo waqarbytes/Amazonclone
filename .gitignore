@@ -1,0 +1,10 @@
+# Dependencies & system files
+node_modules/
+.DS_Store
+__pycache__/
+*.pyc
+.agents/watcher.log
+.agents/hook_debug.log
+
+# Never ignore agent logs
+!.agent-logs/
