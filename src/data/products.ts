@@ -503,8 +503,8 @@ export const products: Product[] = [
     inStock: true,
     stockCount: 22,
     images: [
-      'https://images.unsplash.com/photo-1584990347449-a2928509c13b?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'An indispensable classic in kitchens around the world. Crafted by French artisans since 1925, delivering superior heat distribution and retention for slow-cooking, braising and roasting.',
     features: [
@@ -601,8 +601,8 @@ export const products: Product[] = [
     inStock: true,
     stockCount: 80,
     images: [
-      'https://images.unsplash.com/photo-1542272604-780c96856592?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'The archetype of all jeans. Since invented in 1873, the 501 features the signature straight leg fit and iconic button fly styling that has defined generations.',
     features: [
@@ -827,7 +827,7 @@ export const products: Product[] = [
     inStock: true,
     stockCount: 45,
     images: [
-      'https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'Based on more than forty interviews with Steve Jobs conducted over two years—as well as interviews with more than a hundred family members, friends, adversaries, competitors, and colleagues.',
@@ -923,7 +923,7 @@ export const products: Product[] = [
     inStock: true,
     stockCount: 35,
     images: [
-      'https://images.unsplash.com/photo-1532012164546-f432f2e3777f?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'The definitive engineering classic on building scalable, reliable, and maintainable software architectures across distributed databases, stream processing, and consensus protocols.',
@@ -1022,7 +1022,7 @@ export const products: Product[] = [
     stockCount: 200,
     images: [
       'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1608248597359-074495c64390?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'Developed with dermatologists, this lightweight, oil-free moisturizer helps hydrate the skin and restore its natural protective barrier with three essential ceramides.',
     features: [
@@ -1149,8 +1149,8 @@ export const products: Product[] = [
     inStock: true,
     stockCount: 24,
     images: [
-      'https://images.unsplash.com/photo-1559591937-e10220268571?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80'
     ],
     description: 'Revolutionary magnetic iO technology combines oscillating round brush heads with gentle micro-vibrations for a professional clean feeling every single day.',
     features: [

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
-  Search, 
   ShoppingCart, 
   MapPin, 
   Menu, 
@@ -10,29 +9,17 @@ import {
   X,
   ChevronDown
 } from 'lucide-react';
-import { ProductCategory } from '../types';
 import { useCart } from '../context/CartContext';
+import { SearchAutocomplete } from '../components/search/SearchAutocomplete';
 
 export const Header: React.FC = () => {
-  const navigate = useNavigate();
   const { itemCount: cartItemCount } = useCart();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('all');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}&category=${selectedCategory}`);
-    } else {
-      navigate(`/search?category=${selectedCategory}`);
-    }
-  };
 
   return (
     <header className="w-full text-white select-none sticky top-0 z-50">
       {/* Top Main Navigation */}
-      <div className="bg-amazon-dark px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="bg-amazon-dark px-3 sm:px-4 py-2 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Mobile Menu Trigger + Logo */}
         <div className="flex items-center gap-2 sm:gap-4">
           <button 
@@ -67,49 +54,10 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Search Bar (Desktop & Tablet) */}
-        <form 
-          onSubmit={handleSearchSubmit}
-          className="hidden md:flex flex-1 max-w-3xl items-stretch h-10 rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-amazon-amber shadow-sm"
-        >
-          {/* Category Dropdown */}
-          <div className="relative bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium flex items-center border-r border-gray-300 transition">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as ProductCategory)}
-              className="bg-transparent pl-3 pr-6 py-2 appearance-none cursor-pointer focus:outline-none text-gray-800"
-              aria-label="Select search category"
-            >
-              <option value="all">All</option>
-              <option value="electronics">Electronics</option>
-              <option value="computers">Computers</option>
-              <option value="home">Home & Kitchen</option>
-              <option value="fashion">Fashion</option>
-              <option value="books">Books</option>
-              <option value="beauty">Beauty</option>
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 absolute right-1.5 pointer-events-none text-gray-600" />
-          </div>
-
-          {/* Search Input */}
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Amazon products, brands, and deals..."
-            className="flex-1 px-3 text-sm text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none"
-            aria-label="Search products"
-          />
-
-          {/* Search Submit Button */}
-          <button
-            type="submit"
-            className="bg-amazon-amber hover:bg-[#f3a847] text-gray-900 px-4 flex items-center justify-center transition"
-            aria-label="Submit search"
-          >
-            <Search className="w-5 h-5 text-gray-800" />
-          </button>
-        </form>
+        {/* Center: Search Bar with Autocomplete (Desktop & Tablet) */}
+        <div className="hidden md:block flex-1 max-w-3xl">
+          <SearchAutocomplete />
+        </div>
 
         {/* Right Nav Options */}
         <div className="flex items-center gap-1 sm:gap-3">
@@ -151,27 +99,8 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Mobile Search Row (Mobile screens only) */}
-      <div className="md:hidden bg-amazon-dark px-3 pb-2.5 pt-1">
-        <form 
-          onSubmit={handleSearchSubmit}
-          className="flex items-stretch h-10 rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-amazon-amber shadow-sm"
-        >
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Amazon products..."
-            className="flex-1 px-3 text-sm text-gray-900 bg-white placeholder:text-gray-400 focus:outline-none"
-            aria-label="Search products on mobile"
-          />
-          <button
-            type="submit"
-            className="bg-amazon-amber hover:bg-[#f3a847] text-gray-900 px-4 flex items-center justify-center transition"
-            aria-label="Submit search mobile"
-          >
-            <Search className="w-5 h-5 text-gray-800" />
-          </button>
-        </form>
+      <div className="md:hidden bg-amazon-dark px-3 pb-2.5 pt-0.5">
+        <SearchAutocomplete isMobile />
       </div>
 
       {/* Secondary Sub-Navigation Bar */}

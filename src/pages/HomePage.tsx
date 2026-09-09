@@ -58,7 +58,7 @@ export const HomePage: React.FC = () => {
       id: 'fashion',
       title: 'Fashion',
       subtitle: 'Denim, sneakers & eyewear',
-      image: 'https://images.unsplash.com/photo-1542272604-780c96856592?w=500&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&auto=format&fit=crop&q=80',
       badge: 'Trending',
       icon: Shirt
     },
