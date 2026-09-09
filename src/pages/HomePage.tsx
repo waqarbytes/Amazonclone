@@ -122,7 +122,7 @@ export const HomePage: React.FC = () => {
     <div className="w-full pb-16 space-y-8">
       {/* ==================== A. HERO SECTION ==================== */}
       <section 
-        className="relative bg-gradient-to-b from-amazon-dark via-amazon-slate to-amazon-bg pt-8 pb-20 px-4 text-white overflow-hidden"
+        className="relative bg-amazon-dark pt-8 pb-20 px-4 text-white overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onFocusCapture={() => setIsFocused(true)}
@@ -142,19 +142,19 @@ export const HomePage: React.FC = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           {/* Left Hero Content */}
           <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-amazon-dark/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amazon-amber border border-amazon-amber/30 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 bg-amazon-dark/80 px-3.5 py-1.5 rounded-full text-xs font-semibold text-amazon-amber border border-amazon-amber/30 backdrop-blur-sm shadow-xs">
               <Zap className="w-3.5 h-3.5 fill-current" />
               <span>Spring Deals Now Live • Save up to 40% on top tech</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] drop-shadow-md">
               Everything you love. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amazon-amber to-amber-200">
                 Faster & cleaner.
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-200 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-gray-100 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed drop-shadow-xs">
               Explore 36+ handpicked products across tech, home, fashion, books, and beauty with instantaneous search and zero checkout friction.
             </p>
 

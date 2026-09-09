@@ -74,8 +74,8 @@ export const HeroBackgroundSlider: React.FC<HeroBackgroundSliderProps> = ({
               className={`
                 absolute inset-0 bg-cover bg-center
                 ${prefersReducedMotion 
-                  ? (isActive ? 'opacity-35' : 'opacity-0') 
-                  : `transition-opacity duration-1000 ease-in-out ${isActive ? 'opacity-35' : 'opacity-0'}`}
+                  ? (isActive ? 'opacity-80' : 'opacity-0') 
+                  : `transition-opacity duration-1000 ease-in-out ${isActive ? 'opacity-80' : 'opacity-0'}`}
               `}
               style={{
                 backgroundImage: `url("${slide.image}")`
@@ -84,12 +84,11 @@ export const HeroBackgroundSlider: React.FC<HeroBackgroundSliderProps> = ({
           );
         })}
 
-        {/* Cinematic Scrim & Contrast Overlays for Text Legibility */}
-        {/* Horizontal Gradient: extra dark over left headline copy, tapering gently across */}
-        <div className="absolute inset-0 bg-gradient-to-r from-amazon-dark/95 via-amazon-slate/85 to-amazon-dark/70" />
+        {/* Two-sided gradient: 65% dark navy on left for crisp text contrast, 35% in center, 20% on right for rich image visibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amazon-dark/65 via-amazon-slate/35 to-amazon-dark/20" />
 
-        {/* Vertical Gradient: seamless integration into the page background below */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-amazon-bg/95" />
+        {/* Subtle dark bottom fade into homepage content (no gray fog) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-amazon-dark/50" />
       </div>
 
       {/* Slide Pagination Indicator Dots */}
