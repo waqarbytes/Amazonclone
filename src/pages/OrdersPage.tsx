@@ -1,78 +1,146 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from '../components/common/Container';
-import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
-import { Truck } from 'lucide-react';
+import { Order } from '../types';
+import { getOrders } from '../utils/orderStorage';
+import { OrderCard } from '../components/order/OrderCard';
+import { Package, Search, ShoppingBag } from 'lucide-react';
 
 export const OrdersPage: React.FC = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState<'all' | 'buy_again' | 'in_transit' | 'delivered'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setOrders(getOrders());
+  }, []);
+
+  const filteredOrders = orders.filter(order => {
+    // Filter by tab
+    if (activeTab === 'in_transit' && (order.status === 'delivered')) return false;
+    if (activeTab === 'delivered' && order.status !== 'delivered') return false;
+
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const matchesId = order.orderId.toLowerCase().includes(q);
+      const matchesItem = order.items.some(i => 
+        i.product.title.toLowerCase().includes(q) || i.product.brand.toLowerCase().includes(q)
+      );
+      return matchesId || matchesItem;
+    }
+
+    return true;
+  });
+
   return (
-    <Container className="py-6 space-y-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-amazon-text text-left">Your Orders</h1>
-
-      {/* Orders Filter Tabs */}
-      <div className="flex items-center gap-6 border-b border-gray-200 text-xs font-semibold text-amazon-muted text-left">
-        <span className="text-amazon-text border-b-2 border-amazon-amber pb-2 cursor-pointer">Orders</span>
-        <span className="hover:text-amazon-text pb-2 cursor-pointer">Buy Again</span>
-        <span className="hover:text-amazon-text pb-2 cursor-pointer">Not Yet Shipped</span>
-        <span className="hover:text-amazon-text pb-2 cursor-pointer">Cancelled Orders</span>
-      </div>
-
-      {/* Sample Order Card */}
-      <Card className="text-left p-0 overflow-hidden border border-gray-200">
-        {/* Order Header */}
-        <div className="bg-gray-100/80 px-5 py-3 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4 text-xs text-amazon-muted">
-          <div className="flex items-center gap-6">
-            <div>
-              <span className="block text-[11px] uppercase tracking-wider">Order Placed</span>
-              <span className="font-semibold text-amazon-text">September 9, 2026</span>
-            </div>
-            <div>
-              <span className="block text-[11px] uppercase tracking-wider">Total</span>
-              <span className="font-semibold text-amazon-text">$375.84</span>
-            </div>
-            <div>
-              <span className="block text-[11px] uppercase tracking-wider">Ship To</span>
-              <span className="font-semibold text-amazon-link hover:underline cursor-pointer">John Doe</span>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50/50 pb-20 text-left">
+      <Container size="lg" className="py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
           <div>
-            <span className="block text-[11px] uppercase tracking-wider">Order # 114-8921820-38192</span>
-            <span className="text-amazon-link hover:underline cursor-pointer text-xs">View invoice</span>
+            <h1 className="text-2xl sm:text-3xl font-black text-amazon-text tracking-tight">
+              Your Orders
+            </h1>
+            <p className="text-xs text-amazon-muted mt-0.5">
+              Track packages, buy items again, or review order history
+            </p>
+          </div>
+
+          {/* Order Search Input */}
+          <div className="relative w-full sm:w-72">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search all orders..."
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-amazon-amber focus:border-amazon-amber shadow-2xs"
+            />
+            <Search className="w-4 h-4 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
           </div>
         </div>
 
-        {/* Order Content */}
-        <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-20 h-20 bg-gray-50 border border-gray-200 rounded p-1 flex-shrink-0">
-              <img 
-                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&auto=format&fit=crop&q=80" 
-                alt="Product" 
-                className="w-full h-full object-contain"
-              />
+        {/* Filter Navigation Tabs */}
+        <div className="flex items-center gap-4 sm:gap-6 border-b border-gray-200 text-xs font-semibold text-amazon-muted overflow-x-auto hide-scrollbar">
+          <button
+            type="button"
+            onClick={() => setActiveTab('all')}
+            className={`pb-3 transition relative whitespace-nowrap ${
+              activeTab === 'all' 
+                ? 'text-amazon-text font-bold border-b-2 border-amazon-amber' 
+                : 'hover:text-amazon-text'
+            }`}
+          >
+            Orders ({orders.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('buy_again')}
+            className={`pb-3 transition relative whitespace-nowrap ${
+              activeTab === 'buy_again' 
+                ? 'text-amazon-text font-bold border-b-2 border-amazon-amber' 
+                : 'hover:text-amazon-text'
+            }`}
+          >
+            Buy Again
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('in_transit')}
+            className={`pb-3 transition relative whitespace-nowrap ${
+              activeTab === 'in_transit' 
+                ? 'text-amazon-text font-bold border-b-2 border-amazon-amber' 
+                : 'hover:text-amazon-text'
+            }`}
+          >
+            Not Yet Delivered
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('delivered')}
+            className={`pb-3 transition relative whitespace-nowrap ${
+              activeTab === 'delivered' 
+                ? 'text-amazon-text font-bold border-b-2 border-amazon-amber' 
+                : 'hover:text-amazon-text'
+            }`}
+          >
+            Delivered
+          </button>
+        </div>
+
+        {/* Orders List */}
+        {filteredOrders.length > 0 ? (
+          <div className="space-y-6">
+            {filteredOrders.map(order => (
+              <OrderCard key={order.orderId} order={order} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-12 bg-white rounded-2xl border border-gray-200 text-center space-y-4 shadow-xs">
+            <div className="w-16 h-16 bg-amber-50 text-amazon-amber rounded-full flex items-center justify-center mx-auto">
+              <Package className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-bold">
-                <Truck className="w-4 h-4" /> Arriving Tomorrow by 8 PM
-              </div>
-              <h3 className="text-sm font-bold text-amazon-text">Sony WH-1000XM5 Wireless Headphones</h3>
-              <p className="text-xs text-amazon-muted">Sold by: Amazon.com Services LLC</p>
+              <h2 className="text-xl font-bold text-amazon-text">
+                {orders.length === 0 ? 'No orders placed yet' : 'No matching orders found'}
+              </h2>
+              <p className="text-xs text-amazon-muted max-w-sm mx-auto">
+                {orders.length === 0
+                  ? "Looking for past orders? Browse our catalog and place your first order today!"
+                  : "We couldn't find any orders matching your search or active filter."}
+              </p>
+            </div>
+            <div className="pt-2">
+              <Link to="/search">
+                <Button variant="primary" size="md">
+                  <ShoppingBag className="w-4 h-4 mr-1.5" /> Start Shopping
+                </Button>
+              </Link>
             </div>
           </div>
-
-          <div className="flex flex-col gap-2 w-full sm:w-auto">
-            <Link to="/product/prod-1">
-              <Button variant="primary" size="sm" fullWidth>
-                Buy it again
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm" fullWidth>
-              Track package
-            </Button>
-          </div>
-        </div>
-      </Card>
-    </Container>
+        )}
+      </Container>
+    </div>
   );
 };

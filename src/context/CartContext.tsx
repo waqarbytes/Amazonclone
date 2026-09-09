@@ -3,10 +3,15 @@ import { Product, CartItem } from '../types';
 
 interface CartContextType {
   items: CartItem[];
+  savedForLater: CartItem[];
   addToCart: (product: Product, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  saveForLater: (productId: string) => void;
+  moveToCart: (productId: string) => void;
+  removeFromSaved: (productId: string) => void;
+  removeOrderedItems: (productIds: string[]) => void;
   subtotal: number;
   itemCount: number;
   lastAddedProduct: Product | null;
@@ -16,6 +21,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'amazon_rebuild_cart_v1';
+const SAVED_STORAGE_KEY = 'amazon_rebuild_saved_for_later_v1';
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
@@ -28,9 +34,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
+  const [savedForLater, setSavedForLater] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem(SAVED_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error('Failed to load saved-for-later from localStorage', e);
+      return [];
+    }
+  });
+
   const [lastAddedProduct, setLastAddedProduct] = useState<Product | null>(null);
 
-  // Sync with localStorage
+  // Sync active cart with localStorage
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
@@ -39,18 +55,31 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [items]);
 
+  // Sync saved-for-later with localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(savedForLater));
+    } catch (e) {
+      console.error('Failed to save saved-for-later to localStorage', e);
+    }
+  }, [savedForLater]);
+
   const addToCart = (product: Product, quantity: number = 1) => {
+    const maxStock = product.stockCount || 15;
     setItems(prevItems => {
       const existingIndex = prevItems.findIndex(item => item.product.id === product.id);
       if (existingIndex > -1) {
+        const currentQty = prevItems[existingIndex].quantity;
+        const newQty = Math.min(currentQty + quantity, maxStock);
         const updated = [...prevItems];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + quantity
+          quantity: newQty
         };
         return updated;
       } else {
-        return [...prevItems, { product, quantity }];
+        const safeQty = Math.min(Math.max(1, quantity), maxStock);
+        return [...prevItems, { product, quantity: safeQty }];
       }
     });
     setLastAddedProduct(product);
@@ -71,14 +100,44 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
     setItems(prevItems =>
-      prevItems.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+      prevItems.map(item => {
+        if (item.product.id === productId) {
+          const maxStock = item.product.stockCount || 15;
+          const safeQty = Math.min(Math.max(1, quantity), maxStock);
+          return { ...item, quantity: safeQty };
+        }
+        return item;
+      })
     );
   };
 
   const clearCart = () => {
     setItems([]);
+  };
+
+  const saveForLater = (productId: string) => {
+    const itemToSave = items.find(i => i.product.id === productId);
+    if (!itemToSave) return;
+    setItems(prev => prev.filter(i => i.product.id !== productId));
+    setSavedForLater(prev => {
+      const exists = prev.some(i => i.product.id === productId);
+      return exists ? prev : [itemToSave, ...prev];
+    });
+  };
+
+  const moveToCart = (productId: string) => {
+    const itemToMove = savedForLater.find(i => i.product.id === productId);
+    if (!itemToMove) return;
+    setSavedForLater(prev => prev.filter(i => i.product.id !== productId));
+    addToCart(itemToMove.product, itemToMove.quantity);
+  };
+
+  const removeFromSaved = (productId: string) => {
+    setSavedForLater(prev => prev.filter(i => i.product.id !== productId));
+  };
+
+  const removeOrderedItems = (productIds: string[]) => {
+    setItems(prev => prev.filter(item => !productIds.includes(item.product.id)));
   };
 
   const dismissToast = () => {
@@ -99,10 +158,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <CartContext.Provider
       value={{
         items,
+        savedForLater,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
+        saveForLater,
+        moveToCart,
+        removeFromSaved,
+        removeOrderedItems,
         subtotal,
         itemCount,
         lastAddedProduct,

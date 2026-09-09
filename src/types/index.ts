@@ -34,6 +34,7 @@ export interface CartItem {
 }
 
 export interface ShippingAddress {
+  id?: string;
   fullName: string;
   street: string;
   apt?: string;
@@ -42,24 +43,52 @@ export interface ShippingAddress {
   zipCode: string;
   country: string;
   phone: string;
+  isDefault?: boolean;
+}
+
+export type DeliverySpeed = 'free_prime' | 'standard' | 'priority';
+
+export interface DeliveryOption {
+  id: DeliverySpeed;
+  title: string;
+  speedText: string;
+  price: number;
+  estimatedDate: string;
+}
+
+export type PaymentType = 'card' | 'upi' | 'cod' | 'prime_store_card';
+
+export interface PaymentMethodInfo {
+  type: PaymentType;
+  lastFour?: string;
+  cardHolder?: string;
+  cardBrand?: string;
+  expiry?: string;
+  upiId?: string;
+}
+
+export interface PurchasedItem {
+  product: Product;
+  quantity: number;
+  priceAtPurchase: number;
 }
 
 export interface Order {
   orderId: string;
   createdAt: string;
-  items: CartItem[];
+  items: CartItem[] | PurchasedItem[];
   shippingAddress: ShippingAddress;
-  paymentMethod: {
-    type: 'card' | 'prime_store_card';
-    lastFour: string;
-    cardHolder: string;
-  };
+  paymentMethod: PaymentMethodInfo;
+  deliveryOption?: DeliveryOption;
   subtotal: number;
   shippingCost: number;
   tax: number;
+  discount?: number;
   total: number;
   deliveryDate: string;
-  status: 'ordered' | 'shipped' | 'out_for_delivery' | 'delivered';
+  estimatedDeliveryDate?: string;
+  trackingNumber?: string;
+  status: 'ordered' | 'preparing' | 'shipped' | 'out_for_delivery' | 'delivered';
 }
 
 export interface FilterState {
