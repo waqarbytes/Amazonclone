@@ -3,6 +3,8 @@ node_modules/
 .DS_Store
 __pycache__/
 *.pyc
+dist/
+tsconfig.tsbuildinfo
 .agents/watcher.log
 .agents/hook_debug.log
 
