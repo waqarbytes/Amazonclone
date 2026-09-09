@@ -11,13 +11,14 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { ProductCategory } from '../types';
+import { useCart } from '../context/CartContext';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { itemCount: cartItemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('all');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const cartItemCount = 0; // Will be connected to CartContext in M5
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
