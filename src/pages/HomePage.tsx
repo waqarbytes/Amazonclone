@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Container } from '../components/common/Container';
 import { Badge } from '../components/common/Badge';
 import { ProductRow } from '../components/home/ProductRow';
+import { HeroBackgroundSlider, HERO_SLIDES } from '../components/home/HeroBackgroundSlider';
 import { 
   products, 
   getDealProducts, 
@@ -31,6 +32,35 @@ export const HomePage: React.FC = () => {
   const dealProducts = getDealProducts();
   const trendingProducts = getBestSellerProducts();
   const topRatedProducts = products.filter(p => p.rating >= 4.7).slice(0, 8);
+
+  // Hero Background Slider State (4.5s crossfade, pause on hover/focus, prefers-reduced-motion)
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    const handleChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Autoplay every 4.5 seconds (paused when hovered or focused)
+  useEffect(() => {
+    if (isHovered || isFocused) return;
+
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % HERO_SLIDES.length);
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [isHovered, isFocused]);
+
+  const handleSelectSlide = useCallback((index: number) => {
+    setCurrentSlide(index);
+  }, []);
 
   // Personalized modules based on user intent & local history
   const lastViewedId = recentIds[0]?.id;
@@ -91,7 +121,24 @@ export const HomePage: React.FC = () => {
   return (
     <div className="w-full pb-16 space-y-8">
       {/* ==================== A. HERO SECTION ==================== */}
-      <section className="relative bg-gradient-to-b from-amazon-dark via-amazon-slate to-amazon-bg pt-8 pb-20 px-4 text-white overflow-hidden">
+      <section 
+        className="relative bg-gradient-to-b from-amazon-dark via-amazon-slate to-amazon-bg pt-8 pb-20 px-4 text-white overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocusCapture={() => setIsFocused(true)}
+        onBlurCapture={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setIsFocused(false);
+          }
+        }}
+      >
+        {/* Automatic Background Image Crossfade Slider */}
+        <HeroBackgroundSlider
+          currentSlide={currentSlide}
+          onSelectSlide={handleSelectSlide}
+          prefersReducedMotion={prefersReducedMotion}
+        />
+
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           {/* Left Hero Content */}
           <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
