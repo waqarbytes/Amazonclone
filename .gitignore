@@ -13,3 +13,7 @@ tsconfig.tsbuildinfo
 
 # Test output
 test-results/
+
+# Deployment build metadata
+.netlify/
+.vercel/
