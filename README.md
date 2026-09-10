@@ -8,7 +8,7 @@ A modern, high-performance e-commerce shopping experience inspired by proven Ama
 
 ## Live Production & Repository Links
 
-- **Live Production URL**: [https://duke-coleman-annie-owner.trycloudflare.com](https://duke-coleman-annie-owner.trycloudflare.com)
+- **Live Production URL**: [(https://amazonclone4348.netlify.app/)]
 - **Public GitHub Repository**: [https://github.com/waqarbytes/amazon-rebuild](https://github.com/waqarbytes/amazon-rebuild)
 
 ---
