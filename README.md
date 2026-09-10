@@ -9,7 +9,7 @@ A modern, high-performance e-commerce shopping experience inspired by proven Ama
 ## Live Production & Repository Links
 
 - **Live Production URL**: [(https://amazonclone4348.netlify.app/)]
-- **Public GitHub Repository**: [https://github.com/waqarbytes/amazon-rebuild](https://github.com/waqarbytes/amazon-rebuild)
+- **Public GitHub Repository**: [https://github.com/waqarbytes/Amazonclone)
 
 ---
 
